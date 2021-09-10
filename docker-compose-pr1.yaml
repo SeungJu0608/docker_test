@@ -1,0 +1,29 @@
+version: "3.7"
+
+services:
+  test:
+    image: node:12-alpine
+    command: sh -c "yarn install && yarn run dev" # 뭘 실행시키고 싶은지를 쓰면 됨! 원래 컨테이너 하나는 하나의 실행이 이루어지게끔 하는것
+    ports:  # 포트범위에서 내가 원하는 걸 열어서 host:다른거 적어주면 됨
+      - 3080:3000
+    working_dir: /testspace # 컨테이너 안의 워킹디렉토리
+    volumes:   # 볼륨을 잡지 않으면 컨테이너 안의 것을 볼 수 없음!
+      - ./:/testspace  # 현재 로컬경로에서 test컨테이너의 워킹디렉토리를 볼 수 있게! 즉, 두개의 컴퓨터를 연결하는 것과 같다고 생각하면 된다!!
+    environment:  # 컨테이너에서의 환경변수
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: secret
+      MYSQL_DB: todos
+
+  mysql:
+    image: mysql:5.7
+    volumes:
+      - todo-mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: todos
+
+volumes:
+  todo-mysql-data:
+
+
